@@ -1,35 +1,29 @@
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn import datasets
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
-import numpy as np
-url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
-df = pd.read_csv(url, names=[
-    "sepal length", "sepal width", "petal length", "petal width", "target" ])
-features = ["sepal length", "sepal width", "petal length", "petal width"]
-x = df.loc[:, features].values
-y = df.loc[:, ["target"]].values
-x = StandardScaler().fit_transform(x)
-pca = PCA(n_components=2)
-principalComponents = pca.fit_transform(x)
-principalDf = pd.DataFrame(
-    data=principalComponents,
-    columns=["principal component 1", "principal component 2"] )
-finalDf = pd.concat([principalDf, df[["target"]]], axis=1)
-plt.figure(figsize=(8, 8))
-target_mapping = {
-    "Iris-setosa": 0,
-    "Iris-versicolor": 1,
-    "Iris-virginica": 2 }
-colors_num = df["target"].map(target_mapping)
-plt.scatter(
-    principalComponents[:, 0],
-    principalComponents[:, 1],
-    c=colors_num,
-    cmap="plasma")
-plt.xlabel("PC1")
-plt.ylabel("PC2")
-plt.title("PCA of Iris Dataset")
+
+# load data
+d = datasets.load_iris()
+X = d.data
+y = d.target
+
+# apply PCA
+p = PCA(n_components=2)
+X_pca = p.fit_transform(X)
+
+# explained variance
+print("Explained Variance Ratio:", p.explained_variance_ratio_)
+
+# plot
+plt.figure(figsize=(8,6))
+scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap='viridis')
+
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.title("PCA - Iris Dataset")
+
+# legend
+plt.legend(*scatter.legend_elements(), title="Classes")
+
+plt.grid(True)
 plt.show()
-print("Explained variance ratio:")
-print(pca.explained_variance_ratio_)
