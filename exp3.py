@@ -1,20 +1,30 @@
-from sklearn import datasets
-from sklearn.linear_model import LinearRegression
+import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
-X, y = datasets.load_iris(return_X_y=True)
+# create dataset inside code
+data = pd.DataFrame({
+    "Years_of_Education": [10, 12, 14, 16, 18, 20, 22],
+    "Income": [20000, 25000, 30000, 40000, 50000, 65000, 80000]
+})
 
-X = X[:, 0].reshape(-1, 1)
+# features and target
+X = data[['Years_of_Education']]
+y = data['Income']
 
-m = LinearRegression()
-m.fit(X, y)
+# model
+model = LinearRegression()
+model.fit(X, y)
 
-y_pred = m.predict(X)
+# prediction
+y_pred = model.predict(X)
 
-plt.scatter(X, y, color='blue', label="Actual")
-plt.plot(X, y_pred, color='red', label="Regression Line")
-plt.xlabel("Feature")
-plt.ylabel("Target")
-plt.title("Linear Regression on Iris")
+# plot
+plt.scatter(X, y, color='blue', label='Actual Data')
+plt.plot(X, y_pred, color='red', label='Regression Line')
+
+plt.xlabel('Years of Education')
+plt.ylabel('Income')
+plt.title('Education vs Income (Linear Regression)')
 plt.legend()
 plt.show()
