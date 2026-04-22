@@ -1,23 +1,20 @@
-import numpy as np
-import matplotlib.pyplot as plt
 from sklearn import datasets
 from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Load dataset
-iris = datasets.load_iris()
+# load data
+X, y = datasets.load_iris(return_X_y=True)
 
-# Use only two classes and two features
-X = iris.data[iris.target != 2][:, :2]
-y = iris.target[iris.target != 2]
+# take 2 classes and 2 features
+X = X[y != 2][:, :2]
+y = y[y != 2]
 
-# Train SVM model
-model = SVC(kernel="linear")
-model.fit(X, y)
+m = SVC(kernel="linear")
+m.fit(X, y)
 
-# Plot data points
-plt.scatter(X[:, 0], X[:, 1], c=y)
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap='coolwarm')
 
-# Plot decision boundary
 ax = plt.gca()
 xlim = ax.get_xlim()
 ylim = ax.get_ylim()
@@ -25,14 +22,12 @@ ylim = ax.get_ylim()
 xx = np.linspace(xlim[0], xlim[1], 30)
 yy = np.linspace(ylim[0], ylim[1], 30)
 YY, XX = np.meshgrid(yy, xx)
-
 xy = np.vstack([XX.ravel(), YY.ravel()]).T
-Z = model.decision_function(xy)
-Z = Z.reshape(XX.shape)
+Z = m.decision_function(xy).reshape(XX.shape)
 
-ax.contour(XX, YY, Z, levels=[0], colors="black")
+ax.contour(XX, YY, Z, colors='black', levels=[0])
 
-plt.xlabel("Sepal Length (cm)")
-plt.ylabel("Sepal Width (cm)")
-plt.title("SVM Decision Boundary for Iris Classification")
+plt.title("SVM Decision Boundary")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
 plt.show()
